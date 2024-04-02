@@ -1,0 +1,25 @@
+<style>
+	table, th, td {
+		border: 1px solid black;
+		border-collapse: collapse;
+	}
+</style>
+<h1>Contacts</h1>
+
+<table>
+	<thead>
+	<tr>
+		<th>First</th> <th>Last</th> <th>Phone</th> <th>Email</th><th></th>
+	</tr>
+	</thead>
+	<tbody>
+	{{range .Contacts}}
+		<tr>
+			<td>{{ .First }}</td>
+			<td>{{ .Last }}</td>
+			<td>{{ .Phone }}</td>
+			<td>{{ .Email }}</td>
+			<td></td>
+		</tr>
+	{{end}}
+</table>
