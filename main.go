@@ -5,14 +5,16 @@ import (
 	"net/http"
 	"github.com/gorilla/mux"
 	"html/template"
+	"encoding/json"
+	"io/ioutil"
 )
 
 type Contact struct{
-	Id int
-	First string
-	Last string
-	Phone string
-	Email string
+	Id int	`json:"id"`
+	First string `json:"first"`
+	Last string `json:"last"`
+	Phone string `json:"phone"`
+	Email string `json:"email"`
 }
 
 type ContactsPageData struct{
@@ -36,15 +38,26 @@ func HomePlaceholder(w http.ResponseWriter, r *http.Request){
 	fmt.Fprintf(w, "redirect to contacts")
 	http.Redirect(w, r, "/contacts", http.StatusSeeOther)
 }
+
 func Contacts(w http.ResponseWriter, r *http.Request){
-	data := ContactsPageData{
-		PageTitle: "Contacts",
-		Contacts: []Contact{
-			{Id: 2, First: "Edward", Last: "Newgate", Phone: "123-456-7890", Email: "newgate@example.comz"},
-		},
+	var objContacts []Contact
+	data, err := ioutil.ReadFile("contacts.json")
+	if err != nil {
+		fmt.Println("error while reading the file:", err)
+	} else {
+		err = json.Unmarshal(data, &objContacts)
+		if err != nil {
+			fmt.Println("Error unmarshalling JSON:", err)
+		}
 	}
+
+	displayData := ContactsPageData{
+		PageTitle: "Contacts List",
+		Contacts: objContacts,
+	}
+	
 	tmpl := template.Must(template.ParseFiles("layout.html"))
-	tmpl.Execute(w, data)
+	tmpl.Execute(w, displayData)
 }
 
 func ContactsNewGet(w http.ResponseWriter, r *http.Request){
@@ -54,3 +67,4 @@ func ContactsNewGet(w http.ResponseWriter, r *http.Request){
 func ContactsNew(w http.ResponseWriter, r *http.Request){
 	fmt.Fprintf(w, "adding new contact in here")
 }
+
