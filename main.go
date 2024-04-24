@@ -61,7 +61,16 @@ func Contacts(w http.ResponseWriter, r *http.Request){
 }
 
 func ContactsNewGet(w http.ResponseWriter, r *http.Request){
-	fmt.Fprintf(w, "adding new contact page, in its own function")
+	contactInfo := Contact{Id: 10, First: "Test", Last: "2", Phone: "1234234", Email: "email@email.com"}
+	tmpl, err := template.ParseFiles("new.html")
+	if err != nil {
+		fmt.Println("Error while parsing new.html template: ", err)	
+	}
+	err = tmpl.Execute(w, contactInfo)
+
+	if err != nil {
+		fmt.Println("Error while executing new.html template: ", err)	
+	}
 }
 
 func ContactsNew(w http.ResponseWriter, r *http.Request){
